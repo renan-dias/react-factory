@@ -203,6 +203,30 @@ function renderPreview(el) {
         </div>
       );
 
+    case 'QRScanner':
+      return (
+        <div style={{ height:p.height, background:'#0f172a', marginTop:p.marginTop, marginBottom:p.marginBottom, position:'relative', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:160, height:160, position:'relative' }}>
+            {[{top:0,left:0},{top:0,right:0},{bottom:0,left:0},{bottom:0,right:0}].map((pos,i) => (
+              <div key={i} style={{ position:'absolute', width:28, height:28, ...pos, borderColor:p.accentColor||'#6366f1', borderStyle:'solid', borderWidth:0,
+                ...(i===0?{borderTopWidth:3,borderLeftWidth:3,borderTopLeftRadius:4}:i===1?{borderTopWidth:3,borderRightWidth:3,borderTopRightRadius:4}:i===2?{borderBottomWidth:3,borderLeftWidth:3,borderBottomLeftRadius:4}:{borderBottomWidth:3,borderRightWidth:3,borderBottomRightRadius:4}) }} />
+            ))}
+            <div style={{ position:'absolute', top:'50%', left:0, right:0, height:2, background:`${p.accentColor||'#6366f1'}88`, marginTop:-1 }} />
+          </div>
+          <span style={{ position:'absolute', bottom:16, color:'rgba(255,255,255,.5)', fontSize:11, ...sys }}>Scanner QR / Código de Barras</span>
+        </div>
+      );
+
+    case 'FaceCamera':
+      return (
+        <div style={{ height:p.height, background:'#0f172a', marginTop:p.marginTop, marginBottom:p.marginBottom, position:'relative', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:120, height:150, border:`2px solid ${p.frameColor||'#10b981'}`, borderRadius:60, position:'relative' }}>
+            <div style={{ position:'absolute', top:-8, left:'50%', transform:'translateX(-50%)', background:p.frameColor||'#10b981', padding:'2px 10px', borderRadius:10, color:'#fff', fontSize:9, fontWeight:'bold', ...sys, whiteSpace:'nowrap' }}>FACE DETECT</div>
+          </div>
+          <span style={{ position:'absolute', bottom:16, color:'rgba(255,255,255,.4)', fontSize:11, ...sys }}>Câmera Frontal</span>
+        </div>
+      );
+
     case 'MapView':
       return (
         <div style={{ height:p.height, overflow:'hidden', marginTop:p.marginTop, marginBottom:p.marginBottom, position:'relative', background:'#e8edf0' }}>
@@ -212,6 +236,63 @@ function renderPreview(el) {
           <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-100%)', fontSize:28, filter:'drop-shadow(0 2px 4px rgba(0,0,0,.3))', ...sys }}>📍</div>
           {p.markerTitle && <div style={{ position:'absolute', top:'calc(50% - 40px)', left:'50%', transform:'translateX(-50%)', background:'#fff', padding:'2px 8px', borderRadius:6, fontSize:11, fontWeight:'bold', ...sys, whiteSpace:'nowrap', boxShadow:'0 2px 6px rgba(0,0,0,.2)' }}>{p.markerTitle}</div>}
           <div style={{ position:'absolute', bottom:4, right:8, fontSize:8, color:'#666', ...sys }}>© Google Maps</div>
+        </div>
+      );
+
+    // ── IA COMPONENTS ─────────────────────────────────────────
+    case 'ChatGPT':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#ffffff', marginTop:p.marginTop, marginBottom:p.marginBottom, minHeight:200 }}>
+          <div style={{ padding:'10px 12px', borderBottom:'1px solid #e5e7eb', display:'flex', alignItems:'center', gap:8, background:'#10a37f' }}>
+            <div style={{ width:28, height:28, borderRadius:14, background:'#fff', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <span style={{ fontSize:14, ...sys }}>🤖</span>
+            </div>
+            <span style={{ color:'#fff', fontSize:13, fontWeight:'bold', ...sys }}>ChatGPT</span>
+            <span style={{ marginLeft:'auto', fontSize:9, background:'rgba(0,0,0,.2)', color:'#fff', padding:'1px 6px', borderRadius:4, ...sys }}>{p.model}</span>
+          </div>
+          <div style={{ padding:10, display:'flex', flexDirection:'column', gap:6 }}>
+            <div style={{ alignSelf:'flex-start', maxWidth:'80%', background:p.bgAssistant||'#f3f4f6', padding:'8px 12px', borderRadius:'12px 12px 12px 4px', fontSize:12, color:'#1a1a1a', ...sys }}>Olá! Como posso ajudar?</div>
+            <div style={{ alignSelf:'flex-end', maxWidth:'80%', background:p.bgUser||'#10a37f', padding:'8px 12px', borderRadius:'12px 12px 4px 12px', fontSize:12, color:'#fff', ...sys }}>Explique React Native</div>
+            <div style={{ alignSelf:'flex-start', maxWidth:'80%', background:p.bgAssistant||'#f3f4f6', padding:'8px 12px', borderRadius:'12px 12px 12px 4px', fontSize:12, color:'#1a1a1a', ...sys }}>React Native é um framework...</div>
+          </div>
+          <ApiBar provider="OpenAI" free={false}/>
+        </div>
+      );
+
+    case 'GeminiAI':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#ffffff', marginTop:p.marginTop, marginBottom:p.marginBottom, minHeight:200 }}>
+          <div style={{ padding:'10px 12px', borderBottom:'1px solid #e5e7eb', display:'flex', alignItems:'center', gap:8, background:'#1a73e8' }}>
+            <div style={{ width:28, height:28, borderRadius:14, background:'#fff', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <span style={{ fontSize:14, ...sys }}>✨</span>
+            </div>
+            <span style={{ color:'#fff', fontSize:13, fontWeight:'bold', ...sys }}>Gemini AI</span>
+            <span style={{ marginLeft:'auto', fontSize:9, background:'rgba(0,0,0,.2)', color:'#fff', padding:'1px 6px', borderRadius:4, ...sys }}>{p.model}</span>
+          </div>
+          <div style={{ padding:10, display:'flex', flexDirection:'column', gap:6 }}>
+            <div style={{ alignSelf:'flex-start', maxWidth:'80%', background:'#f1f3f4', padding:'8px 12px', borderRadius:'12px 12px 12px 4px', fontSize:12, color:'#1a1a1a', ...sys }}>Posso ajudar com isso!</div>
+            <div style={{ alignSelf:'flex-end', maxWidth:'80%', background:'#1a73e8', padding:'8px 12px', borderRadius:'12px 12px 4px 12px', fontSize:12, color:'#fff', ...sys }}>O que é machine learning?</div>
+          </div>
+          <ApiBar provider="Google AI" free={false}/>
+        </div>
+      );
+
+    case 'TranslateWidget':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#4f46e5', borderRadius:p.borderRadius||14, padding:16, marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, marginRight:p.marginRight }}>
+          <div style={{ color:p.textColor||'#fff', fontSize:11, opacity:.7, marginBottom:8, ...sys }}>Traduzir texto</div>
+          <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+            <div style={{ flex:1, background:'rgba(255,255,255,.15)', borderRadius:8, padding:'8px 10px' }}>
+              <div style={{ color:p.textColor||'#fff', fontSize:10, opacity:.6, ...sys }}>{p.sourceLang?.toUpperCase()||'PT'}</div>
+              <div style={{ color:p.textColor||'#fff', fontSize:12, ...sys }}>Olá mundo</div>
+            </div>
+            <span style={{ color:p.textColor||'#fff', fontSize:18, opacity:.8, ...sys }}>→</span>
+            <div style={{ flex:1, background:'rgba(255,255,255,.15)', borderRadius:8, padding:'8px 10px' }}>
+              <div style={{ color:p.textColor||'#fff', fontSize:10, opacity:.6, ...sys }}>{p.targetLang?.toUpperCase()||'EN'}</div>
+              <div style={{ color:p.textColor||'#fff', fontSize:12, ...sys }}>Hello world</div>
+            </div>
+          </div>
+          <ApiBar provider="LibreTranslate" free/>
         </div>
       );
 
@@ -304,6 +385,64 @@ function renderPreview(el) {
         </div>
       );
 
+    case 'GitHubCard':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#0d1117', borderRadius:p.borderRadius||14, padding:16, marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, marginRight:p.marginRight }}>
+          <div style={{ display:'flex', gap:12, alignItems:'center', marginBottom:10 }}>
+            <div style={{ width:48, height:48, borderRadius:24, background:'#30363d', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <span style={{ fontSize:24, ...sys }}>🐙</span>
+            </div>
+            <div>
+              <div style={{ color:p.textColor||'#e6edf3', fontSize:15, fontWeight:'bold', ...sys }}>{p.username||'torvalds'}</div>
+              <div style={{ fontSize:11, color:'#8b949e', ...sys }}>Linux creator</div>
+            </div>
+          </div>
+          <div style={{ display:'flex', gap:16, borderTop:'1px solid #30363d', paddingTop:10 }}>
+            {[['Repos','1.2k'],['Followers','250k'],['Following','0']].map(([l,v]) => (
+              <div key={l} style={{ textAlign:'center' }}><div style={{ color:p.textColor||'#e6edf3', fontSize:14, fontWeight:'bold', ...sys }}>{v}</div><div style={{ color:'#8b949e', fontSize:10, ...sys }}>{l}</div></div>
+            ))}
+          </div>
+          <ApiBar provider="GitHub REST" free />
+        </div>
+      );
+
+    case 'QRGenerator':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#fff', padding:12, marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, display:'inline-block' }}>
+          <div style={{ width:p.size||120, height:p.size||120, background:`repeating-linear-gradient(0deg,${p.foregroundColor||'#000'} 0,${p.foregroundColor||'#000'} 4px,${p.backgroundColor||'#fff'} 4px,${p.backgroundColor||'#fff'} 8px),repeating-linear-gradient(90deg,${p.foregroundColor||'#000'} 0,${p.foregroundColor||'#000'} 4px,transparent 4px,transparent 8px)`, position:'relative', borderRadius:4 }}>
+            <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <div style={{ width:'30%', height:'30%', background:p.backgroundColor||'#fff', display:'flex', alignItems:'center', justifyContent:'center', borderRadius:4 }}>
+                <span style={{ fontSize:14, ...sys }}>QR</span>
+              </div>
+            </div>
+          </div>
+          <div style={{ fontSize:9, color:'#999', marginTop:4, textAlign:'center', ...sys }}>QR Generator</div>
+          <ApiBar provider="goqr.me" free />
+        </div>
+      );
+
+    case 'IpGeo':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#1e293b', borderRadius:p.borderRadius||14, padding:16, marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, marginRight:p.marginRight }}>
+          <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
+            <span style={{ fontSize:24, ...sys }}>🌐</span>
+            <div>
+              <div style={{ color:p.textColor||'#e2e8f0', fontSize:15, fontWeight:'bold', ...sys }}>IP: 189.28.xxx.xxx</div>
+              <div style={{ fontSize:11, color:'#94a3b8', ...sys }}>São Paulo, BR 🇧🇷</div>
+            </div>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
+            {[['ISP','Vivo / Telefônica'],['Timezone','America/Sao_Paulo'],['Org','Telecomunicações'],['Coords','-23.5° / -46.6°']].map(([k,v]) => (
+              <div key={k} style={{ background:'rgba(255,255,255,.06)', padding:'5px 8px', borderRadius:6 }}>
+                <div style={{ color:'#94a3b8', fontSize:9, ...sys }}>{k}</div>
+                <div style={{ color:p.textColor||'#e2e8f0', fontSize:10, fontWeight:'bold', ...sys, marginTop:1 }}>{v}</div>
+              </div>
+            ))}
+          </div>
+          <ApiBar provider="ipapi.co" free />
+        </div>
+      );
+
     case 'NewsFeed':
       return (
         <div style={{ marginTop:p.marginTop, marginBottom:p.marginBottom }}>
@@ -341,6 +480,87 @@ function renderPreview(el) {
         </div>
       );
 
+    // ── NOVAS APIS ────────────────────────────────────────────
+    case 'QuoteCard':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#1e293b', borderRadius:p.borderRadius||16, padding:20, marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, marginRight:p.marginRight }}>
+          <span style={{ fontSize:36, color:p.accentColor||'#a78bfa', fontFamily:'Georgia,serif', lineHeight:1 }}>"</span>
+          <div style={{ color:p.textColor||'#e2e8f0', fontSize:14, lineHeight:1.6, marginTop:4, ...sys }}>The only way to do great work is to love what you do.</div>
+          <div style={{ display:'flex', justifyContent:'flex-end', marginTop:10 }}>
+            <span style={{ color:p.accentColor||'#a78bfa', fontSize:12, fontWeight:'bold', ...sys }}>— Steve Jobs</span>
+          </div>
+          <ApiBar provider="Quotable.io" free />
+        </div>
+      );
+
+    case 'MealCard':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#fff7ed', borderRadius:p.borderRadius||14, overflow:'hidden', marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, marginRight:p.marginRight }}>
+          <div style={{ height:100, background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <span style={{ fontSize:52, ...sys }}>🍝</span>
+          </div>
+          <div style={{ padding:12 }}>
+            <div style={{ fontWeight:'bold', fontSize:15, color:p.textColor||'#1c1917', ...sys }}>{p.mealName||'Spaghetti Bolognese'}</div>
+            <div style={{ display:'flex', gap:8, marginTop:6 }}>
+              <span style={{ fontSize:10, background:p.accentColor||'#ea580c', color:'#fff', padding:'2px 8px', borderRadius:8, ...sys }}>Italiana</span>
+              <span style={{ fontSize:10, color:'#78350f', ...sys }}>30 min</span>
+            </div>
+          </div>
+          <ApiBar provider="TheMealDB" free />
+        </div>
+      );
+
+    case 'DogWidget':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#fef3c7', borderRadius:p.borderRadius||14, overflow:'hidden', marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, marginRight:p.marginRight }}>
+          <div style={{ height:p.height||140, background:'linear-gradient(135deg,#fbbf24,#f59e0b)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:8 }}>
+            <span style={{ fontSize:52, ...sys }}>🐕</span>
+            <span style={{ fontSize:11, color:'rgba(0,0,0,.5)', ...sys }}>Foto aleatória</span>
+          </div>
+          <div style={{ padding:'8px 12px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <span style={{ fontWeight:'bold', fontSize:13, color:p.textColor||'#78350f', ...sys }}>Dog Photo</span>
+            <ApiBar provider="Dog.ceo" free />
+          </div>
+        </div>
+      );
+
+    case 'NumberFact':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#ede9fe', borderRadius:p.borderRadius||14, padding:20, marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, marginRight:p.marginRight, textAlign:'center' }}>
+          <div style={{ fontSize:52, fontWeight:900, color:p.accentColor||'#8b5cf6', lineHeight:1, ...sys }}>{p.number||42}</div>
+          <div style={{ fontSize:12, color:p.textColor||'#4c1d95', lineHeight:1.5, marginTop:10, ...sys }}>
+            42 é a resposta para a pergunta fundamental sobre a vida, o universo e tudo mais.
+          </div>
+          <div style={{ marginTop:8, fontSize:10, color:p.accentColor||'#8b5cf6', fontWeight:'bold', ...sys }}>{p.factType||'trivia'}</div>
+          <ApiBar provider="Numbers API" free />
+        </div>
+      );
+
+    case 'AvatarGen':
+      return (
+        <div style={{ marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, display:'inline-block' }}>
+          <div style={{ width:p.size||80, height:p.size||80, borderRadius:p.borderRadius===999?'50%':p.borderRadius||'50%', background:'linear-gradient(135deg,#6366f1,#8b5cf6)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', backgroundColor:p.backgroundColor||'#f1f5f9' }}>
+            <span style={{ fontSize:p.size ? p.size*.6 : 48, ...sys }}>🧑</span>
+          </div>
+          <div style={{ fontSize:9, color:'#aaa', marginTop:3, textAlign:'center', ...sys }}>DiceBear · {p.style||'avataaars'}</div>
+          <ApiBar provider="DiceBear" free />
+        </div>
+      );
+
+    case 'CatWidget':
+      return (
+        <div style={{ backgroundColor:p.backgroundColor||'#fff1f2', borderRadius:p.borderRadius||14, overflow:'hidden', marginTop:p.marginTop, marginBottom:p.marginBottom, marginLeft:p.marginLeft, marginRight:p.marginRight }}>
+          <div style={{ height:p.height||140, background:'linear-gradient(135deg,#fb7185,#f43f5e)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:8 }}>
+            <span style={{ fontSize:52, ...sys }}>🐈</span>
+            <span style={{ fontSize:11, color:'rgba(255,255,255,.7)', ...sys }}>Foto aleatória</span>
+          </div>
+          <div style={{ padding:'8px 12px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <span style={{ fontWeight:'bold', fontSize:13, color:p.textColor||'#881337', ...sys }}>Cat Image</span>
+            <ApiBar provider="TheCatAPI" free />
+          </div>
+        </div>
+      );
+
     default:
       return <div style={{ padding:8, fontSize:11, color:'#aaa', ...sys }}>[{el.type}]</div>;
   }
@@ -356,28 +576,56 @@ function ApiBar({ provider, free, right, style }) {
   );
 }
 
+// ── RESIZE HANDLES ─────────────────────────────────────────
+function ResizeHandles({ el, zoom, onResize }) {
+  const handles = ['nw','n','ne','e','se','s','sw','w'];
+  return (
+    <>
+      {handles.map(dir => (
+        <div
+          key={dir}
+          className={`resize-handle rh-${dir}`}
+          onMouseDown={e => { e.stopPropagation(); e.preventDefault(); onResize(e, el, dir); }}
+        />
+      ))}
+    </>
+  );
+}
+
 // ── CANVAS ELEMENT WRAPPER ─────────────────────────────────
-function CanvasEl({ el, isSelected, onClick, onDelete, onMoveUp, onMoveDown, isFirst, isLast, onDragStartEl, onDragOverEl, onDropEl, isDragTarget }) {
-  const isApi = el.type && COMPONENT_DEFS[el.type]?.category === 'api';
+function CanvasEl({ el, isSelected, onClick, onDelete, onMoveUp, onMoveDown, isFirst, isLast, onDragStartEl, onDragOverEl, onDropEl, isDragTarget, isAdvanced, zoom, onAdvancedDragStart, onResizeStart }) {
+  const isApi = el.type && (COMPONENT_DEFS[el.type]?.category === 'api' || COMPONENT_DEFS[el.type]?.category === 'ia');
+  const ap = el.advancedProps;
+
+  const advancedStyle = isAdvanced && ap ? {
+    position: 'absolute',
+    left: Math.round(ap.x ?? 0),
+    top: Math.round(ap.y ?? 0),
+    width: ap.width ?? 343,
+    cursor: 'move',
+    zIndex: isSelected ? 10 : 1,
+  } : {};
 
   return (
     <div
-      className={`canvas-el${isSelected?' selected':''}${isApi?' api-el':''}`}
+      className={`canvas-el${isSelected?' selected':''}${isApi?' api-el':''}${isAdvanced?' advanced-mode':''}`}
+      style={{ opacity: (!isAdvanced && isDragTarget) ? 0.45 : 1, transition:'opacity .15s', ...advancedStyle }}
       onClick={e => { e.stopPropagation(); onClick(); }}
-      draggable
-      onDragStart={e => { e.stopPropagation(); onDragStartEl(e); }}
-      onDragOver={e => { e.preventDefault(); e.stopPropagation(); onDragOverEl(); }}
-      onDrop={e => { e.preventDefault(); e.stopPropagation(); onDropEl(); }}
-      style={{ opacity: isDragTarget ? 0.45 : 1, transition:'opacity .15s' }}
+      onMouseDown={isAdvanced ? (e => { if (e.button !== 0) return; onClick(); onAdvancedDragStart(e, el); }) : undefined}
+      draggable={!isAdvanced}
+      onDragStart={!isAdvanced ? (e => { e.stopPropagation(); onDragStartEl(e); }) : undefined}
+      onDragOver={!isAdvanced ? (e => { e.preventDefault(); e.stopPropagation(); onDragOverEl(); }) : undefined}
+      onDrop={!isAdvanced ? (e => { e.preventDefault(); e.stopPropagation(); onDropEl(); }) : undefined}
     >
       <div className="canvas-el-overlay" />
-      <div className="canvas-el-tag">{el.type}{isApi?' 🔗':''}</div>
+      <div className="canvas-el-tag">{COMPONENT_DEFS[el.type]?.label || el.type}{isApi?' 🔗':''}</div>
       <div className="canvas-el-actions">
-        {!isFirst && <button className="el-action-btn" onClick={e => { e.stopPropagation(); onMoveUp(); }}><ChevronUp size={11}/></button>}
-        {!isLast  && <button className="el-action-btn" onClick={e => { e.stopPropagation(); onMoveDown(); }}><ChevronDown size={11}/></button>}
+        {!isAdvanced && !isFirst && <button className="el-action-btn" onClick={e => { e.stopPropagation(); onMoveUp(); }}><ChevronUp size={11}/></button>}
+        {!isAdvanced && !isLast  && <button className="el-action-btn" onClick={e => { e.stopPropagation(); onMoveDown(); }}><ChevronDown size={11}/></button>}
         <button className="el-action-btn danger" onClick={e => { e.stopPropagation(); onDelete(); }}><X size={10}/></button>
       </div>
       {renderPreview(el)}
+      {isAdvanced && isSelected && <ResizeHandles el={el} zoom={zoom} onResize={onResizeStart}/>}
     </div>
   );
 }
@@ -391,7 +639,7 @@ function isLight(hex) {
 
 // ── MAIN CANVAS ───────────────────────────────────────────
 export default function Canvas() {
-  const { getCurrentScreen, addElement, deleteElement, selectElement, reorderElements, project, updateScreenProp } = useApp();
+  const { getCurrentScreen, addElement, addCustomElement, deleteElement, selectElement, reorderElements, updateElement, project, updateScreenProp, creationMode } = useApp();
   const [isDragOver, setIsDragOver] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [dragIndex, setDragIndex] = useState(null);
@@ -404,6 +652,7 @@ export default function Canvas() {
   const selectedId = project.selectedElementId;
   const light = isLight(screen.backgroundColor);
   const statusColor = light ? '#1a1a1a' : '#ffffff';
+  const isAdvanced = creationMode === 'advanced';
 
   // Drop from palette
   const handleDragOver = useCallback((e) => { e.preventDefault(); e.dataTransfer.dropEffect='copy'; setIsDragOver(true); }, []);
@@ -411,10 +660,84 @@ export default function Canvas() {
   const handleDrop = useCallback((e) => {
     e.preventDefault(); setIsDragOver(false);
     const type = e.dataTransfer.getData('componentType');
-    if (type) addElement(type);
-  }, [addElement]);
+    const customRaw = e.dataTransfer.getData('customComponent');
+    if (type) {
+      if (isAdvanced && phoneRef.current) {
+        const rect = phoneRef.current.getBoundingClientRect();
+        const x = Math.max(0, (e.clientX - rect.left) / zoom - 20);
+        const y = Math.max(0, (e.clientY - rect.top) / zoom - 20);
+        addElement(type, { x, y, width: 343, height: null });
+      } else {
+        addElement(type);
+      }
+    } else if (customRaw) {
+      try {
+        const cc = JSON.parse(customRaw);
+        if (isAdvanced && phoneRef.current) {
+          const rect = phoneRef.current.getBoundingClientRect();
+          const x = Math.max(0, (e.clientX - rect.left) / zoom - 20);
+          const y = Math.max(0, (e.clientY - rect.top) / zoom - 20);
+          addCustomElement(cc, { x, y, width: 343, height: null });
+        } else {
+          addCustomElement(cc);
+        }
+      } catch {}
+    }
+  }, [addElement, addCustomElement, isAdvanced, zoom]);
 
-  // Internal drag-and-drop reordering
+  // Advanced mode: drag element to reposition
+  const handleAdvancedDragStart = useCallback((e, el) => {
+    if (!isAdvanced) return;
+    e.stopPropagation();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const origX = el.advancedProps?.x ?? 0;
+    const origY = el.advancedProps?.y ?? 0;
+
+    const onMove = (mv) => {
+      const dx = (mv.clientX - startX) / zoom;
+      const dy = (mv.clientY - startY) / zoom;
+      updateElement(el.id, { advancedProps: { ...(el.advancedProps||{}), x: origX+dx, y: origY+dy }});
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }, [isAdvanced, zoom, updateElement]);
+
+  // Advanced mode: resize element
+  const handleResizeStart = useCallback((e, el, dir) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const ap = el.advancedProps || {};
+    const origX = ap.x ?? 0;
+    const origY = ap.y ?? 0;
+    const origW = ap.width ?? 343;
+    const origH = ap.height ?? 100;
+
+    const onMove = (mv) => {
+      const dx = (mv.clientX - startX) / zoom;
+      const dy = (mv.clientY - startY) / zoom;
+      let x = origX, y = origY, w = origW, h = origH;
+      if (dir.includes('e')) w = Math.max(60, origW + dx);
+      if (dir.includes('w')) { w = Math.max(60, origW - dx); x = origX + (origW - w); }
+      if (dir.includes('s')) h = Math.max(30, origH + dy);
+      if (dir.includes('n')) { h = Math.max(30, origH - dy); y = origY + (origH - h); }
+      updateElement(el.id, { advancedProps: { ...ap, x, y, width: w, height: h }});
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }, [zoom, updateElement]);
+
+  // Normal mode: internal drag-and-drop reordering
   const handleElDragStart = useCallback((idx) => { setDragIndex(idx); }, []);
   const handleElDragOver = useCallback((idx) => { if (dragIndex !== null && idx !== dragIndex) setDropIndex(idx); }, [dragIndex]);
   const handleElDrop = useCallback((idx) => {
@@ -437,6 +760,7 @@ export default function Canvas() {
       <div className="canvas-toolbar">
         <div className="canvas-info">
           <div className="canvas-badge"><Cpu size={11}/> Linha de Montagem</div>
+          <span className={`mode-badge ${isAdvanced?'advanced':'normal'}`}>{isAdvanced?'AVANÇADO':'NORMAL'}</span>
           <span className="canvas-screen-info"><strong>{screen.name}</strong> · {elements.length} componente{elements.length!==1?'s':''}</span>
         </div>
         <div className="bg-swatch-row">
@@ -464,7 +788,8 @@ export default function Canvas() {
 
             <div
               ref={phoneRef}
-              className={`phone-content${isDragOver?' drop-active':''}`}
+              className={`phone-content${isDragOver?' drop-active':''}${isAdvanced?' advanced-canvas':''}`}
+              style={isAdvanced ? { position:'relative', minHeight:560 } : {}}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
@@ -473,7 +798,8 @@ export default function Canvas() {
                 <div className="canvas-drop-hint">
                   <div className="canvas-drop-hint-icon"><Cpu size={40} strokeWidth={1}/></div>
                   <div style={{ fontWeight:600, marginBottom:4 }}>Linha de Montagem vazia</div>
-                  <div style={{ fontSize:12 }}>Arraste componentes do Estoque · Reordene arrastando os elementos</div>
+                  <div style={{ fontSize:12 }}>Arraste componentes do Estoque</div>
+                  {isAdvanced && <div style={{ fontSize:11, opacity:.7 }}>Modo Avançado: posicione livremente na tela</div>}
                 </div>
               ) : (
                 elements.map((el, idx) => (
@@ -491,6 +817,10 @@ export default function Canvas() {
                     onDragOverEl={() => handleElDragOver(idx)}
                     onDropEl={() => handleElDrop(idx)}
                     isDragTarget={dropIndex===idx && dragIndex!==idx}
+                    isAdvanced={isAdvanced}
+                    zoom={zoom}
+                    onAdvancedDragStart={handleAdvancedDragStart}
+                    onResizeStart={handleResizeStart}
                   />
                 ))
               )}

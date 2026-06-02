@@ -64,6 +64,19 @@ export const COMPONENT_DEFS = {
     defaultProps:{query:'tecnologia',apiKey:'SUA_API_KEY',pageSize:3,backgroundColor:'#ffffff',borderRadius:14,marginTop:8,marginBottom:8}},
   MovieCard:      { label:'Card de Filme',     category:'api', apiProvider:'TMDB',          apiKey:true,  apiDocs:'https://www.themoviedb.org/documentation/api',
     defaultProps:{movieId:'299536',apiKey:'SUA_API_KEY',backgroundColor:'#1e293b',borderRadius:14,height:200,marginTop:8,marginBottom:8,marginLeft:16,marginRight:16}},
+  // ── NOVAS APIS EXTERNAS ──────────────────────────────────────
+  QuoteCard:      { label:'Citação Famosa',    category:'api', apiProvider:'Quotable.io',   apiKey:false, apiDocs:'https://docs.quotable.io',
+    defaultProps:{backgroundColor:'#1e293b',textColor:'#e2e8f0',accentColor:'#a78bfa',borderRadius:16,marginTop:8,marginBottom:8,marginLeft:16,marginRight:16}},
+  MealCard:       { label:'Receita',           category:'api', apiProvider:'TheMealDB',     apiKey:false, apiDocs:'https://www.themealdb.com/api.php',
+    defaultProps:{mealName:'Spaghetti',backgroundColor:'#fff7ed',textColor:'#1c1917',accentColor:'#ea580c',borderRadius:14,marginTop:8,marginBottom:8,marginLeft:16,marginRight:16}},
+  DogWidget:      { label:'Dog Photo',         category:'api', apiProvider:'Dog.ceo',       apiKey:false, apiDocs:'https://dog.ceo/dog-api',
+    defaultProps:{backgroundColor:'#fef3c7',textColor:'#78350f',borderRadius:14,height:180,marginTop:8,marginBottom:8,marginLeft:16,marginRight:16}},
+  NumberFact:     { label:'Fato Numérico',     category:'api', apiProvider:'Numbers API',   apiKey:false, apiDocs:'http://numbersapi.com',
+    defaultProps:{number:42,factType:'trivia',backgroundColor:'#ede9fe',textColor:'#4c1d95',accentColor:'#8b5cf6',borderRadius:14,marginTop:8,marginBottom:8,marginLeft:16,marginRight:16}},
+  AvatarGen:      { label:'Avatar Gerado',     category:'api', apiProvider:'DiceBear',      apiKey:false, apiDocs:'https://www.dicebear.com/how-to-use/http-api',
+    defaultProps:{seed:'felix',style:'avataaars',size:80,backgroundColor:'#f1f5f9',borderRadius:999,marginTop:8,marginBottom:8,marginLeft:16}},
+  CatWidget:      { label:'Cat Image',         category:'api', apiProvider:'TheCatAPI',     apiKey:false, apiDocs:'https://developers.thecatapi.com',
+    defaultProps:{backgroundColor:'#fff1f2',textColor:'#881337',borderRadius:14,height:180,marginTop:8,marginBottom:8,marginLeft:16,marginRight:16}},
 };
 
 export const TEMPLATES = [
@@ -115,7 +128,6 @@ export const TEMPLATES = [
     ]}},
 ];
 
-// Design system presets
 export const DS_PRESETS = {
   ios: {
     name: 'Apple HIG', short: 'iOS',
@@ -142,11 +154,18 @@ export function AppProvider({ children }) {
     try { const s=localStorage.getItem('rf_project'); if(s) return { ...makeInitialProject(), ...JSON.parse(s) }; } catch {}
     return makeInitialProject();
   });
+  const [creationMode, setCreationMode] = useState(() => localStorage.getItem('rf_mode') || 'normal');
+  const [customComponents, setCustomComponents] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('rf_custom') || '[]'); } catch { return []; }
+  });
 
   useEffect(() => { localStorage.setItem('rf_theme', theme); }, [theme]);
   useEffect(() => { localStorage.setItem('rf_project', JSON.stringify(project)); }, [project]);
+  useEffect(() => { localStorage.setItem('rf_mode', creationMode); }, [creationMode]);
+  useEffect(() => { localStorage.setItem('rf_custom', JSON.stringify(customComponents)); }, [customComponents]);
 
   const toggleTheme      = () => setTheme(t => t==='dark' ? 'light' : 'dark');
+  const toggleCreationMode = () => setCreationMode(m => m==='normal' ? 'advanced' : 'normal');
   const getCurrentScreen = () => project.screens.find(s => s.id===project.currentScreenId) || project.screens[0];
   const setDesignSystem  = (ds) => setProject(p => ({...p, designSystem:ds}));
   const addScreen        = () => { const s=makeScreen(`Tela ${project.screens.length+1}`); setProject(p=>({...p,screens:[...p.screens,s],currentScreenId:s.id,selectedElementId:null})); };
@@ -155,10 +174,17 @@ export function AppProvider({ children }) {
   const switchScreen     = (id) => setProject(p=>({...p,currentScreenId:id,selectedElementId:null}));
   const renameScreen     = (id,name) => setProject(p=>({...p,screens:p.screens.map(s=>s.id===id?{...s,name}:s)}));
   const updateScreenProp = (prop,value) => setProject(p=>({...p,screens:p.screens.map(s=>s.id===p.currentScreenId?{...s,[prop]:value}:s)}));
-  const addElement       = (type) => { const el={id:gen(),type,props:{...COMPONENT_DEFS[type].defaultProps}}; setProject(p=>({...p,screens:p.screens.map(s=>s.id!==p.currentScreenId?s:{...s,elements:[...s.elements,el]}),selectedElementId:el.id})); };
+  const addElement       = (type, advancedProps) => {
+    const el={ id:gen(), type, props:{...COMPONENT_DEFS[type].defaultProps}, advancedProps: advancedProps||null };
+    setProject(p=>({...p,screens:p.screens.map(s=>s.id!==p.currentScreenId?s:{...s,elements:[...s.elements,el]}),selectedElementId:el.id}));
+  };
+  const addCustomElement = (cc, advancedProps) => {
+    const el={ id:gen(), type:cc.type, props:{...cc.props}, advancedProps: advancedProps||null };
+    setProject(p=>({...p,screens:p.screens.map(s=>s.id!==p.currentScreenId?s:{...s,elements:[...s.elements,el]}),selectedElementId:el.id}));
+  };
   const deleteElement    = (id) => setProject(p=>({...p,screens:p.screens.map(s=>s.id!==p.currentScreenId?s:{...s,elements:s.elements.filter(e=>e.id!==id)}),selectedElementId:p.selectedElementId===id?null:p.selectedElementId}));
   const selectElement    = (id) => setProject(p=>({...p,selectedElementId:id}));
-  const updateElement    = (id,props) => setProject(p=>({...p,screens:p.screens.map(s=>s.id!==p.currentScreenId?s:{...s,elements:s.elements.map(e=>e.id===id?{...e,props:{...e.props,...props}}:e)})}));
+  const updateElement    = (id,props) => setProject(p=>({...p,screens:p.screens.map(s=>s.id!==p.currentScreenId?s:{...s,elements:s.elements.map(e=>e.id===id?{...e,...props,props:{...e.props,...(props.props||{})}}:e)})}));
   const reorderElements  = (els) => setProject(p=>({...p,screens:p.screens.map(s=>s.id===p.currentScreenId?{...s,elements:els}:s)}));
   const addBlock         = (block) => setProject(p=>({...p,screens:p.screens.map(s=>s.id!==p.currentScreenId?s:{...s,blocks:[...(s.blocks||[]),{...block,id:gen()}]})}));
   const updateBlock      = (bid,ch) => setProject(p=>({...p,screens:p.screens.map(s=>s.id!==p.currentScreenId?s:{...s,blocks:s.blocks.map(b=>b.id===bid?{...b,...ch}:b)})}));
@@ -168,13 +194,21 @@ export function AppProvider({ children }) {
   const exportProject    = () => { const b=new Blob([JSON.stringify(project,null,2)],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=`${project.name.replace(/\s/g,'_')}.rfactory`; a.click(); URL.revokeObjectURL(u); };
   const importProject    = (file) => { const r=new FileReader(); r.onload=e=>{ try{setProject({...makeInitialProject(),...JSON.parse(e.target.result)})}catch{alert('Arquivo inválido!')} }; r.readAsText(file); };
 
+  const saveCustomComponent = (el, name) => {
+    const cc = { id:gen(), name, type:el.type, props:{...el.props}, category:COMPONENT_DEFS[el.type]?.category || 'básico' };
+    setCustomComponents(prev => [...prev, cc]);
+  };
+  const deleteCustomComponent = (id) => setCustomComponents(prev => prev.filter(c => c.id !== id));
+
   return (
     <AppContext.Provider value={{
-      theme,toggleTheme,project,getCurrentScreen,
-      addScreen,deleteScreen,switchScreen,renameScreen,updateScreenProp,applyTemplate,setDesignSystem,
-      addElement,deleteElement,selectElement,updateElement,reorderElements,
-      addBlock,updateBlock,deleteBlock,
-      setProjectName,resetProject,exportProject,importProject,
+      theme, toggleTheme, project, getCurrentScreen,
+      creationMode, toggleCreationMode,
+      customComponents, saveCustomComponent, deleteCustomComponent, addCustomElement,
+      addScreen, deleteScreen, switchScreen, renameScreen, updateScreenProp, applyTemplate, setDesignSystem,
+      addElement, deleteElement, selectElement, updateElement, reorderElements,
+      addBlock, updateBlock, deleteBlock,
+      setProjectName, resetProject, exportProject, importProject,
     }}>
       {children}
     </AppContext.Provider>

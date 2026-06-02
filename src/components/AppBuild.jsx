@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { Rocket, X, ChevronLeft, ChevronRight, Copy, Check, BookOpen } from 'lucide-react';
+import { Rocket, X, ChevronLeft, ChevronRight, Copy, Check, BookOpen, Download } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
-import { generateExpoProject } from '../utils/codeGenerator';
+import { generateExpoProject, downloadScreenFile } from '../utils/codeGenerator';
 
 const STEP_ICONS = {
   CheckSquare: '✔', Rocket: '▲', FolderOpen: '▶', Package: '⊞',
@@ -9,7 +9,7 @@ const STEP_ICONS = {
   Key: '◈', Globe: '◉', Star: '★',
 };
 
-function CodeBlock({ code, language }) {
+function CodeBlock({ code, language, screen, allScreens }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
@@ -19,15 +19,26 @@ function CodeBlock({ code, language }) {
     });
   }, [code]);
 
+  const handleDownload = useCallback(() => {
+    if (screen && allScreens) downloadScreenFile(screen, allScreens);
+  }, [screen, allScreens]);
+
   const highlighted = highlightCode(code, language);
 
   return (
     <div className="slide-code-area">
       <div className="slide-code-header">
         <span className="slide-lang-badge">{language}</span>
-        <button className="btn btn-sm" onClick={handleCopy}>
-          {copied ? <><Check size={12} /> Copiado!</> : <><Copy size={12} /> Copiar código</>}
-        </button>
+        <div style={{ display:'flex', gap:6 }}>
+          {screen && (
+            <button className="btn btn-sm btn-success" onClick={handleDownload} title="Baixar arquivo .jsx">
+              <Download size={12} /> Download .jsx
+            </button>
+          )}
+          <button className="btn btn-sm" onClick={handleCopy}>
+            {copied ? <><Check size={12} /> Copiado!</> : <><Copy size={12} /> Copiar</>}
+          </button>
+        </div>
       </div>
       <div
         className="slide-code-block"
@@ -182,7 +193,7 @@ export default function AppBuild({ onClose }) {
             </div>
 
             {/* Right code panel */}
-            <CodeBlock code={slide.code} language={slide.language} />
+            <CodeBlock code={slide.code} language={slide.language} screen={slide.screen} allScreens={slide.allScreens} />
           </div>
         )}
 

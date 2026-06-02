@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Hammer, Sun, Moon, Save, FolderOpen, Trash2, Puzzle, Rocket, Cpu } from 'lucide-react';
+import { Hammer, Sun, Moon, Save, FolderOpen, Trash2, Puzzle, Rocket, Cpu, Layout, Maximize2 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
 function showToast(message) {
@@ -13,12 +13,16 @@ function showToast(message) {
 }
 
 export default function Header({ onAppBuild, onToggleBlocks, blocksOpen }) {
-  const { theme, toggleTheme, project, setProjectName, exportProject, importProject, resetProject } = useApp();
+  const { theme, toggleTheme, project, setProjectName, exportProject, importProject, resetProject, creationMode, toggleCreationMode } = useApp();
   const importRef = useRef();
 
   const handleSave = () => { exportProject(); showToast('Projeto exportado com sucesso!'); };
   const handleImport = (e) => { if (e.target.files[0]) { importProject(e.target.files[0]); showToast('Projeto importado!'); } };
   const handleReset = () => { if (confirm('Resetar projeto? Todos os dados serão perdidos.')) resetProject(); };
+  const handleModeToggle = () => {
+    toggleCreationMode();
+    showToast(creationMode === 'normal' ? 'Modo Avançado ativado — arraste e redimensione' : 'Modo Normal ativado');
+  };
 
   return (
     <header className="header">
@@ -42,6 +46,17 @@ export default function Header({ onAppBuild, onToggleBlocks, blocksOpen }) {
       <div className="header-spacer" />
 
       <div className="header-actions">
+        <button
+          className={`btn btn-sm ${creationMode === 'normal' ? 'btn-mode-normal' : 'btn-mode-adv'}`}
+          onClick={handleModeToggle}
+          title={creationMode === 'normal' ? 'Ativar Modo Avançado (arrastar/redimensionar)' : 'Voltar ao Modo Normal'}
+        >
+          {creationMode === 'normal' ? <Layout size={13}/> : <Maximize2 size={13}/>}
+          {creationMode === 'normal' ? 'Normal' : 'Avançado'}
+        </button>
+
+        <div className="header-sep" />
+
         <button
           className={`btn btn-sm${blocksOpen ? ' btn-primary' : ' btn-ghost'}`}
           onClick={onToggleBlocks}
