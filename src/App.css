@@ -316,15 +316,91 @@ html,body,#root{height:100%;overflow:hidden;font-family:var(--ff);color:var(--te
 .block-sequence{display:flex;flex-direction:column;gap:5px;background:var(--glass-light);border:1px solid var(--border);border-radius:var(--r-md);padding:10px;min-width:245px;flex-shrink:0;position:relative}
 .block-seq-del{position:absolute;top:7px;right:7px;background:transparent;border:none;color:var(--text-3);cursor:pointer;padding:2px;border-radius:4px;display:flex;align-items:center}
 .block-seq-del:hover{color:var(--danger);background:rgba(248,113,113,.1)}
-.block-chip{border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:6px;border:none;font-family:inherit}
-.block-event{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
-.block-action{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;margin-left:16px;position:relative}
-.block-action::before{content:'▼';position:absolute;left:-12px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:9px}
-.block-control{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;margin-left:16px;position:relative}
-.block-control::before{content:'◆';position:absolute;left:-12px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:9px}
-.block-chip-select{background:rgba(255,255,255,.18);border:none;border-radius:5px;color:#fff;font-size:11px;font-weight:700;padding:2px 6px;font-family:inherit;cursor:pointer;max-width:140px}
-.block-chip-input{background:rgba(255,255,255,.18);border:none;border-radius:5px;color:#fff;font-size:11px;font-weight:700;padding:2px 6px;font-family:inherit;max-width:90px}
-.block-chip-input::placeholder{color:rgba(255,255,255,.5)}
+.block-chip{
+  border-radius:9px;
+  padding:7px 10px;
+  font-size:11px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  border:none;
+  font-family:inherit;
+  flex-wrap:wrap;
+  box-shadow:0 2px 8px rgba(0,0,0,0.25);
+}
+.block-event{
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.block-action{
+  background:linear-gradient(135deg,#8b5cf6,#7c3aed);
+  color:#fff;
+  margin-left:16px;
+  position:relative;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.block-action::before{content:'▼';position:absolute;left:-13px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:9px}
+.block-control{
+  background:linear-gradient(135deg,#0ea5e9,#0284c7);
+  color:#fff;
+  margin-left:16px;
+  position:relative;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.block-control::before{content:'◆';position:absolute;left:-13px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:9px}
+.block-chip-select{
+  background:rgba(0,0,0,0.32);
+  border:1px solid rgba(255,255,255,0.22);
+  border-radius:6px;
+  color:#ffffff;
+  font-size:11px;
+  font-weight:700;
+  padding:3px 8px 3px 6px;
+  font-family:inherit;
+  cursor:pointer;
+  max-width:145px;
+  outline:none;
+  -webkit-appearance:auto;
+  appearance:auto;
+}
+.block-chip-select:hover{background:rgba(0,0,0,0.46);border-color:rgba(255,255,255,0.38)}
+.block-chip-select:focus{border-color:rgba(255,255,255,0.55);background:rgba(0,0,0,0.5)}
+.block-chip-select option{
+  background-color:#151c36;
+  color:#e1e7f5;
+  font-weight:600;
+  font-size:12px;
+  padding:4px 8px;
+}
+.block-chip-select optgroup{
+  background-color:#0a1020;
+  color:#a78bfa;
+  font-weight:800;
+  font-size:10px;
+  letter-spacing:0.5px;
+}
+.block-chip-select optgroup option{
+  background-color:#151c36;
+  color:#e1e7f5;
+  padding-left:12px;
+}
+.block-chip-input{
+  background:rgba(0,0,0,0.28);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:6px;
+  color:#ffffff;
+  font-size:11px;
+  font-weight:700;
+  padding:3px 7px;
+  font-family:inherit;
+  max-width:90px;
+  outline:none;
+}
+.block-chip-input:hover{border-color:rgba(255,255,255,0.38)}
+.block-chip-input:focus{border-color:rgba(255,255,255,0.6);background:rgba(0,0,0,0.45)}
+.block-chip-input::placeholder{color:rgba(255,255,255,0.42)}
 .block-add-action{background:transparent;border:1px dashed rgba(255,255,255,.15);border-radius:6px;color:var(--text-3);font-size:10px;cursor:pointer;padding:4px 10px;margin-left:16px;text-align:left;font-family:inherit;transition:all .15s}
 .block-add-action:hover{border-color:var(--accent);color:var(--accent);background:var(--glass-hover)}
 .block-editor-empty{flex:1;display:flex;align-items:center;justify-content:center;gap:14px;color:var(--text-3)}
